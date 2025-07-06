@@ -14,9 +14,9 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
     ) {
     try {
-        const resolvedParams = await params;
+        const { id } = await params;
         await dbConnect();
-        await transaction.findByIdAndDelete(resolvedParams.id);
+        await transaction.findByIdAndDelete(id);
         return NextResponse.json({ message: "Deleted" });
     } catch {
         return NextResponse.json(
