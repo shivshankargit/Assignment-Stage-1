@@ -24,7 +24,7 @@ export async function PUT(
 
 export async function DELETE(
     _req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
     ) {
     try {
         await dbConnect();

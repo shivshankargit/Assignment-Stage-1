@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Transaction from "@/lib/models/transaction";
 import dbConnect from "@/lib/mongoDb";
+import transaction from "@/lib/models/transaction";
 
 export async function GET() {
     await dbConnect();
@@ -8,16 +9,18 @@ export async function GET() {
     return NextResponse.json(transactions);
 }
 
-export async function POST(req: NextRequest) {
+export async function DELETE(
+    _req: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+    ) {
     try {
-        const body = await req.json();
+        const { id } = await params; // Await the params first
         await dbConnect();
-        const newTransaction = await Transaction.create(body);
-        return NextResponse.json(newTransaction, { status: 201 });
-    } catch (error) {
-        console.error("POST /api/transactions error:", error);
+        await transaction.findByIdAndDelete(id); // Use the awaited id
+        return NextResponse.json({ message: "Deleted" });
+    } catch {
         return NextResponse.json(
-        { error: "Error creating transaction" },
+        { error: "Error deleting transaction" },
         { status: 500 }
         );
     }
