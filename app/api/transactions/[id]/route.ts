@@ -4,12 +4,13 @@ import dbConnect from "@/lib/mongoDb";
 
 export async function PUT(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
     ) {
     try {
         const body = await req.json();
+        const { id } = await params; // Await the params
         await dbConnect();
-        const updated = await transaction.findByIdAndUpdate(params.id, body, {
+        const updated = await transaction.findByIdAndUpdate(id, body, {
         new: true,
         });
         return Response.json(updated);
