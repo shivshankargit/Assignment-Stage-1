@@ -1,5 +1,6 @@
 'use client';
 
+import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -14,11 +15,17 @@ type Transaction = {
     category?: string;
     };
 
+    
     export default function TransactionList() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
-    const [editForm, setEditForm] = useState<Partial<Transaction>>({});
+    const [editForm, setEditForm] = useState<{
+        amount?: string;
+        date?: string;
+        description?: string;
+    }>({});
+
 
     const fetchTransactions = async () => {
         try {
@@ -26,7 +33,7 @@ type Transaction = {
         const res = await fetch('/api/transactions');
         const data = await res.json();
         setTransactions(data);
-        } catch (error) {
+        } catch {
         toast.error('Failed to load transactions');
         } finally {
         setLoading(false);
@@ -49,7 +56,7 @@ type Transaction = {
         } else {
             toast.error('Delete failed');
         }
-        } catch (err) {
+        } catch {
         toast.error('Error deleting');
         }
     };
@@ -57,7 +64,7 @@ type Transaction = {
     const startEditing = (tx: Transaction) => {
         setEditingId(tx._id);
         setEditForm({
-        amount: tx.amount,
+        amount: tx.amount.toString(),
         date: tx.date.slice(0, 10),
         description: tx.description,
         });
@@ -77,6 +84,13 @@ type Transaction = {
         toast.error('All fields are required.');
         return;
         }
+
+        const amount = parseFloat(editForm.amount);
+        if (isNaN(amount)) {
+            toast.error('Please enter a valid amount.');
+            return;
+        }
+
         try {
         const res = await fetch(`/api/transactions/${id}`, {
             method: 'PUT',
@@ -84,7 +98,7 @@ type Transaction = {
             'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-            amount: parseFloat(editForm.amount),
+            amount: amount,
             date: editForm.date,
             description: editForm.description,
             }),
@@ -96,7 +110,7 @@ type Transaction = {
         } else {
             toast.error('Update failed');
         }
-        } catch (error) {
+        } catch {
         toast.error('Error updating');
         }
     };

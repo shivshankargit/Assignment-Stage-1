@@ -13,7 +13,7 @@ export async function PUT(
         new: true,
         });
         return Response.json(updated);
-    } catch (error) {
+    } catch {
         return Response.json(
         { error: "Error updating transaction" },
         { status: 500 }
@@ -29,7 +29,7 @@ export async function DELETE(
         await dbConnect();
         await transaction.findByIdAndDelete(params.id);
         return Response.json({ message: "Deleted" });
-    } catch (error) {
+    } catch {
         return Response.json(
         { error: "Error deleting transaction" },
         { status: 500 }

@@ -99,7 +99,9 @@ export default function TransactionForm() {
             />
         </div>
 
-        <Button className="w-full bg-indigo-600 hover:bg-indigo-700" type="submit" disabled={loading} className="w-full">
+        <Button className={`w-full bg-indigo-600 hover:bg-indigo-700 ${loading ? 'opacity-50' : ''}`}
+            type="submit" 
+            disabled={loading}>
             {loading ? 'Adding...' : 'Add Transaction'}
         </Button>
         </form>
