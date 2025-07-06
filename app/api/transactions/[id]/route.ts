@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import transaction from "@/lib/models/transaction";
 import dbConnect from "@/lib/mongoDb";
 
@@ -13,9 +13,9 @@ export async function PUT(
         const updated = await transaction.findByIdAndUpdate(id, body, {
         new: true,
         });
-        return Response.json(updated);
+        return NextResponse.json(updated);
     } catch {
-        return Response.json(
+        return NextResponse.json(
         { error: "Error updating transaction" },
         { status: 500 }
         );
@@ -29,9 +29,9 @@ export async function DELETE(
     try {
         await dbConnect();
         await transaction.findByIdAndDelete(params.id);
-        return Response.json({ message: "Deleted" });
+        return NextResponse.json({ message: "Deleted" });
     } catch {
-        return Response.json(
+        return NextResponse.json(
         { error: "Error deleting transaction" },
         { status: 500 }
         );
